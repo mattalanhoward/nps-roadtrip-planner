@@ -9,7 +9,7 @@ const service = axios.create({
 //total parks is 497
 export const getAllParks = () => {
   return service
-    .get("/parks")
+    .get("/parks?limit=497")
     .then((response) => response.data)
     .catch((error) => error);
 };

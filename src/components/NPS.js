@@ -14,19 +14,21 @@ export class NPS extends Component {
     allParks: null,
     loading: true,
     errorMessage: "",
-    stateAbbr: "nc",
+    stateAbbr: "ca",
     value: "",
+    allStateAbbr: [],
   };
 
   async componentDidMount() {
-    this.fetchAllParks();
+    await this.fetchAllParks();
+    this.getStateAbbr();
   }
 
   async fetchAllParks() {
     try {
-      //   const response = await getAllParks();
+      const response = await getAllParks();
       this.setState({
-        // allParks: response.data,
+        allParks: response.data,
         loading: false,
       });
     } catch (error) {
@@ -36,12 +38,24 @@ export class NPS extends Component {
     }
   }
 
+  getStateAbbr = () => {
+    const stateCodes = [];
+    let allParkStateCodes = this.state.allParks.map((address) => {
+      return address.addresses.map((code) => stateCodes.push(code.stateCode));
+    });
+    const result = stateCodes.filter((v, i, a) => a.indexOf(v) === i).sort();
+
+    this.setState({
+      allStateAbbr: result,
+    });
+  };
+
   handleChange = (event) => {
     this.setState({ stateAbbr: event.target.value });
   };
 
   render() {
-    const { allParks, loading, stateAbbr } = this.state;
+    const { allParks, loading, stateAbbr, allStateAbbr } = this.state;
 
     if (loading) {
       return <div>Loading...</div>;
@@ -50,24 +64,18 @@ export class NPS extends Component {
         <div>
           <TopNav />
           <h1>Find your next park by state</h1>
-          {/* <h1>Total Parks: {allParks.length}</h1> */}
+          <h1>Total Parks: {allParks.length}</h1>
           <h1>Welcome</h1>
+
           <form>
-            <select value={this.state.stateAbbr} onChange={this.handleChange}>
-              <option default value="nc">
-                NC
-              </option>
-              <option value="sc">SC</option>
-              <option value="co">CO</option>
-              <option value="wa">WA</option>
-              <option value="or">OR</option>
-              <option value="me">ME</option>
-              <option value="ut">UT</option>
-              <option value="az">AZ</option>
+            <select value={stateAbbr} onChange={this.handleChange}>
+              {allStateAbbr.map((state) => {
+                return <option value={state.toLowerCase()}>{state}</option>;
+              })}
             </select>
           </form>
           <Link to={`/state/${stateAbbr}`}>Get Details</Link>
-          {/* <ul>
+          <ul>
             <div className="allParksList">
               <ul>
                 {allParks.map((park) => (
@@ -75,7 +83,7 @@ export class NPS extends Component {
                 ))}
               </ul>
             </div>
-          </ul> */}
+          </ul>
         </div>
       );
     }
