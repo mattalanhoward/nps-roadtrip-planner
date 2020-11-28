@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { getAllParksByState } from "../services/npsService";
-import TopNav from "../components/TopNav";
+import { getAllParksByState } from "../../services/npsService";
+import TopNav from "../TopNav/TopNav";
 import { Link } from "react-router-dom";
-import SinglePark from "../components/SinglePark";
+import SinglePark from "../SinglePark/SinglePark";
 
 export default class SingleState extends Component {
   state = {

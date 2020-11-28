@@ -3,11 +3,12 @@
 import React, { Component } from "react";
 import { BrowserRouter, Switch, Link, Route } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import { getAllParks, getAllParksByState } from "../services/npsService";
-import TopNav from "../components/TopNav";
-import Signup from "../components/Signup";
-import Login from "../components/Login";
-import SingleState from "../components/SingleState";
+import { getAllParks, getAllParksByState } from "../../services/npsService";
+import TopNav from "../TopNav/TopNav";
+import SingleState from "../SingleState/SingleState";
+
+import "./NPS.css";
+import USMap from "../USMap/USMap";
 
 export class NPS extends Component {
   state = {
@@ -27,10 +28,15 @@ export class NPS extends Component {
   async fetchAllParks() {
     try {
       const response = await getAllParks();
-      this.setState({
-        allParks: response.data,
-        loading: false,
-      });
+      this.setState(
+        {
+          allParks: response.data,
+          loading: false,
+        },
+        () => {
+          console.log(this.state);
+        }
+      );
     } catch (error) {
       this.setState({
         errorMessage: error,
@@ -70,12 +76,17 @@ export class NPS extends Component {
           <form>
             <select value={stateAbbr} onChange={this.handleChange}>
               {allStateAbbr.map((state) => {
-                return <option value={state.toLowerCase()}>{state}</option>;
+                return (
+                  <option key={state} value={state.toLowerCase()}>
+                    {state}
+                  </option>
+                );
               })}
             </select>
           </form>
           <Link to={`/state/${stateAbbr}`}>Get Details</Link>
-          <ul>
+          <USMap />
+          {/* <ul>
             <div className="allParksList">
               <ul>
                 {allParks.map((park) => (
@@ -83,7 +94,7 @@ export class NPS extends Component {
                 ))}
               </ul>
             </div>
-          </ul>
+          </ul> */}
         </div>
       );
     }
