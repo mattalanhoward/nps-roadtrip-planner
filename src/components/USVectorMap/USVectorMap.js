@@ -3,13 +3,14 @@ import { BrowserRouter, Switch, Link, Route } from "react-router-dom";
 
 import { VectorMap } from "@south-paw/react-vector-maps";
 import usmap from "../../VectorUSMap.json";
-import "./USMap.css";
+import "./USVectorMap.css";
 
-const USMap = () => {
+const USVectorMap = () => {
   const style = { margin: "1rem auto", width: "300px" };
 
   const onClick = ({ target }) => {
     const stateAbbr = target.attributes.id.value.slice(3);
+    // <Link to="/state/ca">Home</Link>;
     window.open(`/state/${stateAbbr}`);
   };
 
@@ -20,4 +21,4 @@ const USMap = () => {
   );
 };
 
-export default USMap;
+export default USVectorMap;

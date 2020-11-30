@@ -1,0 +1,7 @@
+.state-park-map-and-list-container {
+  margin: 0 auto;
+  width: 80%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}

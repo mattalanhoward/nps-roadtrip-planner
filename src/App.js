@@ -1,7 +1,6 @@
 import "./App.css";
 import NPS from "./components/NPS/NPS";
-import { BrowserRouter, Switch, Link, Route } from "react-router-dom";
-import TopNav from "./components/TopNav/TopNav";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import SingleState from "./components/SingleState/SingleState";
 
 function App() {

@@ -1,14 +1,12 @@
 //Hold in state list of all NPS.
 //Drop down to search by state.
 import React, { Component } from "react";
-import { BrowserRouter, Switch, Link, Route } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import { getAllParks, getAllParksByState } from "../../services/npsService";
+import { Link } from "react-router-dom";
+import { getAllParks } from "../../services/npsService";
 import TopNav from "../TopNav/TopNav";
-import SingleState from "../SingleState/SingleState";
 
 import "./NPS.css";
-import USMap from "../USMap/USMap";
+import USVectorMap from "../USVectorMap/USVectorMap";
 
 export class NPS extends Component {
   state = {
@@ -85,7 +83,7 @@ export class NPS extends Component {
             </select>
           </form>
           <Link to={`/state/${stateAbbr}`}>Get Details</Link>
-          <USMap />
+          <USVectorMap />
           {/* <ul>
             <div className="allParksList">
               <ul>

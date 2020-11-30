@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { getAllParksByState } from "../../services/npsService";
 import TopNav from "../TopNav/TopNav";
-import { Link } from "react-router-dom";
 import SinglePark from "../SinglePark/SinglePark";
+import "./SingleState.css";
+import mapboxgl from "mapbox-gl";
+import "../StateMap/StateMap.css";
+import ReactMapGL, { Marker } from "react-map-gl";
+
+const MAPBOX_ACCESS_TOKEN = `${process.env.REACT_APP_MAPBOX_API_KEY}`;
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 export default class SingleState extends Component {
   state = {
@@ -10,21 +16,28 @@ export default class SingleState extends Component {
     loading: true,
     singleParkDetails: {},
     toggleDetails: false,
+    lat: 37.0902,
+    lng: -95.7129,
+    zoom: 4,
   };
 
   singleStateAbbr = this.props.match.params.details;
 
-  componentDidMount() {
-    this.fetchState(this.singleStateAbbr);
+  async componentDidMount() {
+    await this.fetchState(this.singleStateAbbr);
+    this.createMap();
   }
 
   async fetchState() {
     try {
       const response = await getAllParksByState(this.singleStateAbbr);
+      console.log(response.data[0].latitude);
       this.setState(
         {
           singleStateParks: response.data,
           loading: false,
+          lat: response.data[0].latitude,
+          lng: response.data[0].longitude,
         },
         () => console.log(`AFTER FETCHING SINGLE STATE`, this.state)
       );
@@ -33,6 +46,28 @@ export default class SingleState extends Component {
         errorMessage: error,
       });
     }
+  }
+
+  createMap() {
+    const map = new mapboxgl.Map({
+      container: this.mapContainer,
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [this.state.lng, this.state.lat],
+      zoom: this.state.zoom,
+      maxBounds: this.state.bounds,
+    });
+
+    map.on("move", () => {
+      this.setState({
+        lng: map.getCenter().lng.toFixed(4),
+        lat: map.getCenter().lat.toFixed(4),
+        zoom: map.getZoom().toFixed(2),
+      });
+    });
+
+    let marker = new mapboxgl.Marker()
+      .setLngLat([-95.7129, 37.0902])
+      .addTo(map);
   }
 
   displayParkDetails = (event) => {
@@ -55,25 +90,39 @@ export default class SingleState extends Component {
 
   render() {
     const { singleStateParks, singleParkDetails, toggleDetails } = this.state;
-    console.log(singleStateParks);
+
     return (
       <div>
         <TopNav />
+
         <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1>
-        <ul>
-          <div className="allParksList">
-            <ul>
-              {singleStateParks.map((statePark) => (
-                <li key={statePark.id}>
-                  <button onClick={(event) => this.displayParkDetails(event)}>
-                    {" "}
-                    {statePark.fullName}
-                  </button>
-                </li>
-              ))}
-            </ul>
+        <section className="state-park-map-and-list-container">
+          <div
+            className="mapContainer"
+            ref={(el) => (this.mapContainer = el)}
+          />
+          <div className="sidebarStyle">
+            <div>
+              Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{" "}
+              {this.state.zoom}
+            </div>
           </div>
-        </ul>
+
+          <ul>
+            <div className="allParksList">
+              <ul>
+                {singleStateParks.map((statePark) => (
+                  <li key={statePark.id}>
+                    <button onClick={(event) => this.displayParkDetails(event)}>
+                      {" "}
+                      {statePark.fullName}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ul>
+        </section>
         {toggleDetails && <SinglePark {...singleParkDetails} />}
       </div>
     );

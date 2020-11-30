@@ -13,7 +13,6 @@ export default class SinglePark extends Component {
         <h2>Name: {parkInfo.fullName}</h2>
         <p>Description:{parkInfo.description}</p>
         <p>Weather: {parkInfo.weatherInfo}</p>
-        {/* {parkInfo.images} */}
         {parkInfo.images.map((image, idx) => (
           <img style={imgStyle} key={idx} src={image.url} alt={image.altText} />
         ))}
