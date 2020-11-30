@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import { getAllParksByState } from "../../services/npsService";
 import TopNav from "../TopNav/TopNav";
 import SinglePark from "../SinglePark/SinglePark";
-import "./SingleState.css";
 import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import "../StateMap/StateMap.css";
-import ReactMapGL, { Marker } from "react-map-gl";
 
 const MAPBOX_ACCESS_TOKEN = `${process.env.REACT_APP_MAPBOX_API_KEY}`;
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -18,7 +17,7 @@ export default class SingleState extends Component {
     toggleDetails: false,
     lat: 37.0902,
     lng: -95.7129,
-    zoom: 4,
+    zoom: 5,
   };
 
   singleStateAbbr = this.props.match.params.details;
@@ -65,9 +64,14 @@ export default class SingleState extends Component {
       });
     });
 
-    let marker = new mapboxgl.Marker()
-      .setLngLat([-95.7129, 37.0902])
-      .addTo(map);
+    this.state.singleStateParks.map((park) =>
+      new mapboxgl.Marker()
+        .setLngLat([park.longitude, park.latitude])
+        .addTo(map)
+    );
+    // new mapboxgl.Marker()
+    //   .setLngLat([this.state.lng, this.state.lat])
+    //   .addTo(map);
   }
 
   displayParkDetails = (event) => {
@@ -94,7 +98,6 @@ export default class SingleState extends Component {
     return (
       <div>
         <TopNav />
-
         <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1>
         <section className="state-park-map-and-list-container">
           <div
