@@ -1,59 +1,126 @@
-//This component will hold MAPBOX States and Display all Parks in that state.abs
-//Add this component to single state so user has clickable list and map.
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import mapboxgl from "mapbox-gl";
-import "./StateMap.css";
-import { getAllParks, getAllParksByState } from "../../services/npsService";
+import React, { PureComponent } from "react";
+import ReactMapGL, { Marker } from "react-map-gl";
+import Geocoder from "react-mapbox-gl-geocoder";
+import { Container, Col, Row, Button } from "reactstrap";
 
-const MAPBOX_ACCESS_TOKEN = `${process.env.REACT_APP_MAPBOX_API_KEY}`;
-mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+const mapStyle = {
+  width: "100%",
+  height: 600,
+};
 
-export class StateMap extends Component {
-  state = {
-    lat: 37.0902,
-    lng: -95.7129,
-    zoom: 4,
-    // bounds: [
-    //   [-124.8047, 27.5301], // Southwest coordinates
-    //   [-64.0102, 49.0243], // Northeast coordinates
-    // ],
-  };
+const mapboxApiKey =
+  "pk.eyJ1IjoibWF0dGFsYW5ob3dhcmQiLCJhIjoiY2tpNGFuZ3ppMjh2ODJzbHRxYnI1MzlteiJ9.Ia6It-CckwfxU3rJLdjdYw";
 
-  //   singleStateAbbr = this.props.match.params.details;
+const params = {
+  country: "usa",
+};
 
-  componentDidMount() {
-    const map = new mapboxgl.Map({
-      container: this.mapContainer,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: [this.state.lng, this.state.lat],
-      zoom: this.state.zoom,
-      maxBounds: this.state.bounds,
-    });
+const CustomMarker = ({ index, marker }) => {
+  return (
+    <Marker longitude={marker.longitude} latitude={marker.latitude}>
+      <div className="marker">
+        <span>
+          <b>{index + 1}</b>
+        </span>
+      </div>
+    </Marker>
+  );
+};
 
-    map.on("move", () => {
-      this.setState({
-        lng: map.getCenter().lng.toFixed(4),
-        lat: map.getCenter().lat.toFixed(4),
-        zoom: map.getZoom().toFixed(2),
-        properties: this.props,
-      });
-    });
+class MapView extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewport: {
+        latitude: 45.50884,
+        longitude: -73.58781,
+        zoom: 6,
+      },
+      tempMarker: null,
+      markers: [],
+    };
   }
 
+  onSelected = (viewport, item) => {
+    this.setState({
+      viewport,
+      tempMarker: {
+        name: item.place_name,
+        longitude: item.center[0],
+        latitude: item.center[1],
+      },
+    });
+  };
+
+  add = () => {
+    var { tempMarker } = this.state;
+
+    this.setState((prevState) => ({
+      markers: [...prevState.markers, tempMarker],
+      tempMarker: null,
+    }));
+  };
+
   render() {
+    const { viewport, tempMarker, markers } = this.state;
     return (
-      <div>
-        <div className="mapContainer" ref={(el) => (this.mapContainer = el)} />
-        <div className="sidebarStyle">
-          <div>
-            Longitude: {this.state.lng} | Latitude: {this.state.lat} | Zoom:{" "}
-            {this.state.zoom}
-          </div>
-        </div>
-      </div>
+      <Container fluid={true}>
+        <Row>
+          <Col>
+            <h2>Mapbox Tutorial</h2>
+          </Col>
+        </Row>
+        <Row className="py-4">
+          <Col xs={2}>
+            <Geocoder
+              mapboxApiAccessToken={mapboxApiKey}
+              onSelected={this.onSelected}
+              viewport={viewport}
+              hideOnSelect={true}
+              value=""
+              queryParams={params}
+            />
+          </Col>
+          <Col>
+            <Button color="primary" onClick={this.add}>
+              Add
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <ReactMapGL
+              mapboxApiAccessToken={mapboxApiKey}
+              mapStyle="mapbox://styles/mapbox/streets-v11"
+              {...viewport}
+              {...mapStyle}
+              onViewportChange={(viewport) => this.setState({ viewport })}
+            >
+              {tempMarker && (
+                <Marker
+                  longitude={tempMarker.longitude}
+                  latitude={tempMarker.latitude}
+                >
+                  <div className="marker temporary-marker">
+                    <span></span>
+                  </div>
+                </Marker>
+              )}
+              {this.state.markers.map((marker, index) => {
+                return (
+                  <CustomMarker
+                    key={`marker-${index}`}
+                    index={index}
+                    marker={marker}
+                  />
+                );
+              })}
+            </ReactMapGL>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 
-export default StateMap;
+export default MapView;
