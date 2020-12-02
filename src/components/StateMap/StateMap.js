@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 import pin from "../../images/pin.svg";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "../StateMap/StateMap.css";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import Geocoder from "react-mapbox-gl-geocoder";
 
 const MAPBOX_ACCESS_TOKEN = `${process.env.REACT_APP_MAPBOX_API_KEY}`;
@@ -22,11 +22,31 @@ export default class StateMap extends Component {
       longitude: -95.7129,
       zoom: 3,
     },
+    showPopUp: false,
+    popUpPark: null,
+  };
+
+  handleShowPopUp = (park) => {
+    this.setState(
+      {
+        showPopUp: !this.state.showPopUp,
+        popUpPark: park,
+      },
+      () => {
+        console.log(this.state);
+      }
+    );
+  };
+
+  handleClosePopup = () => {
+    this.setState({
+      showPopUp: false,
+    });
   };
 
   render() {
     const { singleStateParks } = this.props;
-    const { viewport } = this.state;
+    const { viewport, popUpPark } = this.state;
     console.log(viewport);
     return (
       <section className="map-container">
@@ -48,8 +68,12 @@ export default class StateMap extends Component {
                   longitude={parseFloat(park.longitude)}
                   latitude={parseFloat(park.latitude)}
                   offsetLeft={-10}
+                  offsetTop={-10}
                 >
-                  <div className="marker">
+                  <div
+                    className="marker"
+                    onClick={() => this.handleShowPopUp(park)}
+                  >
                     <span className="pin">
                       <img src={pin} alt="Pin" />
                     </span>
@@ -58,6 +82,22 @@ export default class StateMap extends Component {
               );
             }
           })}
+          {this.state.showPopUp && (
+            <Popup
+              latitude={parseFloat(popUpPark.latitude)}
+              longitude={parseFloat(popUpPark.longitude)}
+              onClose={this.handleClosePopup}
+              closeButton={true}
+              closeOnClick={false}
+              offsetTop={-10}
+            >
+              <h3>{popUpPark.fullName}</h3>
+              <p>
+                {popUpPark.addresses[0].city},{" "}
+                {popUpPark.addresses[0].stateCode}
+              </p>
+            </Popup>
+          )}
         </ReactMapGL>
       </section>
     );
