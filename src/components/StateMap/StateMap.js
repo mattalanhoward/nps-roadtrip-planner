@@ -27,6 +27,14 @@ export default class StateMap extends Component {
     showMore: true,
   };
 
+  componentDidMount = () => {
+    this.setStateCoordinates();
+  };
+
+  setStateCoordinates = () => {
+    console.log(`props`, this.props);
+  };
+
   handleShowPopUp = (park) => {
     this.setState({
       showPopUp: true,
@@ -97,16 +105,16 @@ export default class StateMap extends Component {
             >
               <h3>{popUpPark.fullName}</h3>
 
-              {showMore ? (
+              {/* {showMore ? (
                 <p>{popUpPark.description}</p>
               ) : (
                 <p>
                   {popUpPark.description.slice(0, 100) + `...`}{" "}
-                  {/* <div onClick={() => this.toggleShowMore()}>
+                  <div onClick={() => this.toggleShowMore()}>
                     {!showMore && <p>Show More</p>}
-                  </div> */}
+                  </div>
                 </p>
-              )}
+              )} */}
             </Popup>
           )}
         </ReactMapGL>

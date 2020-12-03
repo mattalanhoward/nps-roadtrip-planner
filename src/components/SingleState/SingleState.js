@@ -1,10 +1,12 @@
 import React, { Component, PureComponent } from "react";
 import { getAllParksByState } from "../../services/npsService";
 import TopNav from "../TopNav/TopNav";
+import BottomNav from "../BottomNav/BottomNav";
 import SinglePark from "../SinglePark/SinglePark";
 import mapboxgl from "mapbox-gl";
 import StateMap from "../StateMap/StateMap";
 import "./SingleState.css";
+import Select from "react-select";
 
 const MAPBOX_ACCESS_TOKEN = `${process.env.REACT_APP_MAPBOX_API_KEY}`;
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
@@ -12,6 +14,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 export default class SingleState extends Component {
   state = {
     singleStateParks: [],
+    parkOptions: [],
     loading: true,
     singleParkDetails: {},
     toggleDetails: false,
@@ -23,6 +26,7 @@ export default class SingleState extends Component {
 
   async componentDidMount() {
     await this.fetchState(this.singleStateAbbr);
+    await this.createOptions();
   }
 
   async fetchState() {
@@ -41,9 +45,19 @@ export default class SingleState extends Component {
     }
   }
 
-  displayParkDetails = (event) => {
-    const toggleDetails = this.state.toggleDetails;
-    const park = event.target.innerHTML.substring(1);
+  createOptions = () => {
+    const singleStateParks = this.state.singleStateParks;
+    const parkOptionsArr = [];
+    singleStateParks.map((park) => {
+      parkOptionsArr.push({ value: park.fullName, label: park.fullName });
+    });
+    this.setState({
+      parkOptions: parkOptionsArr,
+    });
+  };
+
+  displayParkDetails = (selected) => {
+    const park = selected.target.value;
 
     const filteredPark = this.state.singleStateParks.filter(
       (x) => x.fullName == park
@@ -62,31 +76,32 @@ export default class SingleState extends Component {
       toggleDetails,
       lat,
       lng,
+      parkOptions,
     } = this.state;
 
     return (
       <div>
         <TopNav />
-        <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1>
+        {/* <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1> */}
+        <div className="state-park-container">
+          <div className="allParksList">
+            <Select
+              options={parkOptions}
+              placeholder={"Select a Park..."}
+              onChange={(val) => {
+                this.displayParkDetails({
+                  target: { name: val.value, value: val.value },
+                });
+              }}
+            />
+          </div>
+          <section className="state-park-map-and-list-container">
+            <StateMap singleStateParks={singleStateParks} lat={lat} lng={lng} />
 
-        <div className="allParksList">
-          <ul>
-            {singleStateParks.map((statePark) => (
-              <li key={statePark.id}>
-                <button onClick={(event) => this.displayParkDetails(event)}>
-                  {" "}
-                  {statePark.fullName}
-                </button>
-              </li>
-            ))}
-          </ul>
+            {toggleDetails && <SinglePark {...singleParkDetails} />}
+          </section>
         </div>
-
-        <section className="state-park-map-and-list-container">
-          <StateMap singleStateParks={singleStateParks} lat={lat} lng={lng} />
-
-          {toggleDetails && <SinglePark {...singleParkDetails} />}
-        </section>
+        <BottomNav />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 .map-container {
-  width: 80%;
-  height: 500px;
+  width: 45%;
+  height: 400px;
 }
 
 .mapboxgl-ctrl-attrib-inner {
@@ -13,7 +13,7 @@
 }
 
 .park-popup {
-  border: 3px solid red;
+  /* border: 3px solid red; */
   width: 50%;
   font-size: x-small;
 }

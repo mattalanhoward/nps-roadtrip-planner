@@ -6,13 +6,12 @@ const TopNav = () => {
   return (
     <div className="bottom-nav-container">
       <div className="logo-title">
-        <p>Logo</p>
-        <h3>National Park Road Trip Planner</h3>
+        <p>Created By Matthew Howard</p>
       </div>
       <div className="links">
-        <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/signup">Signup</Link>
+        <Link to="/github">Github</Link>
+        <Link to="/instagram">Instagram</Link>
+        <Link to="/youtube">Youtube</Link>
       </div>
     </div>
   );

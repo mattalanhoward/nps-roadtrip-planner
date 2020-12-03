@@ -15,7 +15,7 @@ export class NPS extends Component {
     allParks: null,
     loading: false,
     errorMessage: "",
-    stateAbbr: "",
+    stateAbbr: "co",
     allStateInfo: [],
   };
 
@@ -37,6 +37,7 @@ export class NPS extends Component {
       });
     }
   }
+
   getStateInfo = () => {
     this.setState(
       {
@@ -65,6 +66,7 @@ export class NPS extends Component {
           <TopNav />
           <section className="nps-landing-container">
             <div className="nps-input-container">
+              <h1>Find Your Next Park</h1>
               <form>
                 <select value={stateAbbr} onChange={this.handleChange}>
                   {allStateInfo.map((state) => {

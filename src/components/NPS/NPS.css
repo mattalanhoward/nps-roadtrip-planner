@@ -1,7 +1,7 @@
-.us-vector-map {
+/* .us-vector-map {
   margin: "1rem auto";
   width: "50%";
-}
+} */
 
 .nps-landing-container {
   /* border: 2px solid red; */
@@ -17,16 +17,19 @@
 }
 
 .nps-input-container {
-  /* border: 3px solid red; */
   width: 100%;
-  height: 30vh;
+  height: 20vh;
+  margin-top: 30vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   color: white;
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.nps-input-container h1 {
+  margin: 0;
+}
 .nps-input-container form {
   /* border: 2px solid green; */
 }
