@@ -24,35 +24,38 @@ export default class StateMap extends Component {
     },
     showPopUp: false,
     popUpPark: null,
+    showMore: true,
   };
 
   handleShowPopUp = (park) => {
-    this.setState(
-      {
-        showPopUp: !this.state.showPopUp,
-        popUpPark: park,
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      showPopUp: true,
+      popUpPark: park,
+      // showMore: false,
+    });
   };
 
   handleClosePopup = () => {
     this.setState({
       showPopUp: false,
+      popUpPark: null,
+    });
+  };
+
+  toggleShowMore = () => {
+    this.setState({
+      showMore: !this.state.showMore,
     });
   };
 
   render() {
     const { singleStateParks } = this.props;
-    const { viewport, popUpPark } = this.state;
-    console.log(viewport);
+    const { viewport, popUpPark, showMore } = this.state;
     return (
       <section className="map-container">
         <ReactMapGL
           mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
+          mapStyle="mapbox://styles/mapbox/outdoors-v11"
           {...viewport}
           {...mapStyle}
           onViewportChange={(viewport) => this.setState({ viewport })}
@@ -72,7 +75,8 @@ export default class StateMap extends Component {
                 >
                   <div
                     className="marker"
-                    onClick={() => this.handleShowPopUp(park)}
+                    onMouseEnter={() => this.handleShowPopUp(park)}
+                    onMouseLeave={() => this.handleClosePopup(park)}
                   >
                     <span className="pin">
                       <img src={pin} alt="Pin" />
@@ -84,18 +88,25 @@ export default class StateMap extends Component {
           })}
           {this.state.showPopUp && (
             <Popup
+              className="park-popup"
               latitude={parseFloat(popUpPark.latitude)}
               longitude={parseFloat(popUpPark.longitude)}
               onClose={this.handleClosePopup}
-              closeButton={true}
               closeOnClick={false}
               offsetTop={-10}
             >
               <h3>{popUpPark.fullName}</h3>
-              <p>
-                {popUpPark.addresses[0].city},{" "}
-                {popUpPark.addresses[0].stateCode}
-              </p>
+
+              {showMore ? (
+                <p>{popUpPark.description}</p>
+              ) : (
+                <p>
+                  {popUpPark.description.slice(0, 100) + `...`}{" "}
+                  {/* <div onClick={() => this.toggleShowMore()}>
+                    {!showMore && <p>Show More</p>}
+                  </div> */}
+                </p>
+              )}
             </Popup>
           )}
         </ReactMapGL>

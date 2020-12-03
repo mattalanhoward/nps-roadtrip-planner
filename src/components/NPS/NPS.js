@@ -4,23 +4,24 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { getAllParks } from "../../services/npsService";
 import TopNav from "../TopNav/TopNav";
-
 import "./NPS.css";
 import USVectorMap from "../USVectorMap/USVectorMap";
+import BottomNav from "../BottomNav/BottomNav";
+import highSierraTent from "../../images/high-sierra-tent.jpeg";
+import stateData from "../../stateList.json";
 
 export class NPS extends Component {
   state = {
     allParks: null,
-    loading: true,
+    loading: false,
     errorMessage: "",
-    stateAbbr: "ca",
-    value: "",
-    allStateAbbr: [],
+    stateAbbr: "",
+    allStateInfo: [],
   };
 
   async componentDidMount() {
-    await this.fetchAllParks();
-    this.getStateAbbr();
+    // await this.fetchAllParks();
+    this.getStateInfo();
   }
 
   async fetchAllParks() {
@@ -36,25 +37,25 @@ export class NPS extends Component {
       });
     }
   }
-
-  getStateAbbr = () => {
-    const stateCodes = [];
-    let allParkStateCodes = this.state.allParks.map((address) => {
-      return address.addresses.map((code) => stateCodes.push(code.stateCode));
-    });
-    const result = stateCodes.filter((v, i, a) => a.indexOf(v) === i).sort();
-
-    this.setState({
-      allStateAbbr: result,
-    });
+  getStateInfo = () => {
+    this.setState(
+      {
+        allStateInfo: stateData,
+      },
+      () => {
+        console.log(this.state);
+      }
+    );
   };
 
   handleChange = (event) => {
-    this.setState({ stateAbbr: event.target.value });
+    this.setState({ stateAbbr: event.target.value }, () => {
+      console.log(this.state);
+    });
   };
 
   render() {
-    const { allParks, loading, stateAbbr, allStateAbbr } = this.state;
+    const { allParks, loading, stateAbbr, allStateInfo } = this.state;
 
     if (loading) {
       return <div>Loading...</div>;
@@ -62,32 +63,26 @@ export class NPS extends Component {
       return (
         <div>
           <TopNav />
-          <h1>Find your next park by state</h1>
-          <h1>Total Parks: {allParks.length}</h1>
-          <h1>Welcome</h1>
-
-          <form>
-            <select value={stateAbbr} onChange={this.handleChange}>
-              {allStateAbbr.map((state) => {
-                return (
-                  <option key={state} value={state.toLowerCase()}>
-                    {state}
-                  </option>
-                );
-              })}
-            </select>
-          </form>
-          <Link to={`/state/${stateAbbr}`}>Get Details</Link>
-          <USVectorMap />
-          {/* <ul>
-            <div className="allParksList">
-              <ul>
-                {allParks.map((park) => (
-                  <li key={park.id}>{park.fullName}</li>
-                ))}
-              </ul>
+          <section className="nps-landing-container">
+            <div className="nps-input-container">
+              <form>
+                <select value={stateAbbr} onChange={this.handleChange}>
+                  {allStateInfo.map((state) => {
+                    return (
+                      <option
+                        key={state.abbreviation}
+                        value={state.abbreviation}
+                      >
+                        {state.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </form>
+              <Link to={`/state/${stateAbbr}`}>Go to State</Link>
             </div>
-          </ul> */}
+          </section>
+          <BottomNav />
         </div>
       );
     }
@@ -95,3 +90,18 @@ export class NPS extends Component {
 }
 
 export default NPS;
+
+{
+  /* <USVectorMap /> */
+}
+{
+  /* <ul>
+            <div className="allParksList">
+              <ul>
+                {allParks.map((park) => (
+                  <li key={park.id}>{park.fullName}</li>
+                ))}
+              </ul>
+            </div>
+          </ul> */
+}

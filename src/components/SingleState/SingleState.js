@@ -15,6 +15,8 @@ export default class SingleState extends Component {
     loading: true,
     singleParkDetails: {},
     toggleDetails: false,
+    lat: null,
+    lng: null,
   };
 
   singleStateAbbr = this.props.match.params.details;
@@ -26,15 +28,12 @@ export default class SingleState extends Component {
   async fetchState() {
     try {
       const response = await getAllParksByState(this.singleStateAbbr);
-      this.setState(
-        {
-          singleStateParks: response.data,
-          loading: false,
-          lat: response.data[0].latitude,
-          lng: response.data[0].longitude,
-        },
-        () => console.log(`AFTER FETCHING SINGLE STATE`, this.state)
-      );
+      this.setState({
+        singleStateParks: response.data,
+        loading: false,
+        lat: response.data[0].latitude,
+        lng: response.data[0].longitude,
+      });
     } catch (error) {
       this.setState({
         errorMessage: error,
@@ -46,45 +45,48 @@ export default class SingleState extends Component {
     const toggleDetails = this.state.toggleDetails;
     const park = event.target.innerHTML.substring(1);
 
-    console.log(park);
     const filteredPark = this.state.singleStateParks.filter(
       (x) => x.fullName == park
     );
 
-    this.setState(
-      {
-        singleParkDetails: filteredPark[0],
-        toggleDetails: true,
-      },
-      () => console.log(`Display Details`, this.state)
-    );
+    this.setState({
+      singleParkDetails: filteredPark[0],
+      toggleDetails: true,
+    });
   };
 
   render() {
-    const { singleStateParks, singleParkDetails, toggleDetails } = this.state;
+    const {
+      singleStateParks,
+      singleParkDetails,
+      toggleDetails,
+      lat,
+      lng,
+    } = this.state;
 
     return (
       <div>
         <TopNav />
         <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1>
-        <section className="state-park-map-and-list-container">
-          <StateMap singleStateParks={singleStateParks} />
+
+        <div className="allParksList">
           <ul>
-            <div className="allParksList">
-              <ul>
-                {singleStateParks.map((statePark) => (
-                  <li key={statePark.id}>
-                    <button onClick={(event) => this.displayParkDetails(event)}>
-                      {" "}
-                      {statePark.fullName}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {singleStateParks.map((statePark) => (
+              <li key={statePark.id}>
+                <button onClick={(event) => this.displayParkDetails(event)}>
+                  {" "}
+                  {statePark.fullName}
+                </button>
+              </li>
+            ))}
           </ul>
+        </div>
+
+        <section className="state-park-map-and-list-container">
+          <StateMap singleStateParks={singleStateParks} lat={lat} lng={lng} />
+
+          {toggleDetails && <SinglePark {...singleParkDetails} />}
         </section>
-        {toggleDetails && <SinglePark {...singleParkDetails} />}
       </div>
     );
   }
