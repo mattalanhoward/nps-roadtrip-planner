@@ -9,11 +9,16 @@ import { withRouter } from "react-router-dom";
 import tent from "../../images/tent.svg";
 import caravan from "../../images/caravan.svg";
 import backpack from "../../images/backpack.svg";
+import whitestar from "../../images/white-star.svg";
+import yellowstar from "../../images/yellow-star.svg";
+import truckbw from "../../images/roadtrip.svg";
+import truckcolor from "../../images/roadtripcolor.svg";
 
 const popupStyle = {
   borderRadius: 2,
   opacity: 0.9,
   padding: "1em",
+  margin: "0",
   background: "black",
   color: "white",
 };
@@ -23,6 +28,8 @@ export default class SinglePark extends Component {
     showCarousel: false,
     showParkDetails: false,
     singleParkDetails: null,
+    isFavorite: false,
+    isOnRoadTrip: false,
   };
 
   togglePhotos = () => {
@@ -42,10 +49,46 @@ export default class SinglePark extends Component {
     );
   };
 
+  handleFavorite = () => {
+    this.state.isFavorite ? this.removeFavorite() : this.addFavorite();
+    this.setState({
+      isFavorite: !this.state.isFavorite,
+    });
+  };
+
+  addFavorite = () => {
+    console.log(`Add Favorite`);
+  };
+
+  removeFavorite = () => {
+    console.log(`Remove  Favorite`);
+  };
+
+  handleRoadTrip = () => {
+    this.state.isOnRoadTrip ? this.removeFromTrip() : this.addToTrip();
+    this.setState({
+      isOnRoadTrip: !this.state.isOnRoadTrip,
+    });
+  };
+
+  addToTrip = () => {
+    console.log(`Add To Trip`);
+  };
+
+  removeFromTrip = () => {
+    console.log(`Remove From Trip`);
+  };
+
   render() {
     const parkInfo = this.props.park;
     // console.log(`Park Info`, parkInfo);
-    const { showCarousel, showParkDetails, singleParkDetails } = this.state;
+    const {
+      showCarousel,
+      showParkDetails,
+      singleParkDetails,
+      isFavorite,
+      isOnRoadTrip,
+    } = this.state;
 
     const images = parkInfo.images;
 
@@ -64,6 +107,47 @@ export default class SinglePark extends Component {
                 ? `Various States: ${parkInfo.states}`
                 : `State: ${parkInfo.states}`}
             </p>
+            <div className="favorite-icons">
+              <Popup
+                content={
+                  isFavorite ? (
+                    <p>Remove from Favorites</p>
+                  ) : (
+                    <p>Add to Favorites</p>
+                  )
+                }
+                trigger={
+                  <p onClick={this.handleFavorite}>
+                    {isFavorite ? (
+                      <img src={yellowstar} alt={"yellowstar"}></img>
+                    ) : (
+                      <img src={whitestar} alt={"whitestar"}></img>
+                    )}
+                  </p>
+                }
+                style={popupStyle}
+              />
+              <Popup
+                content={
+                  isOnRoadTrip ? (
+                    <p>Remove from Road Trip</p>
+                  ) : (
+                    <p>Add to Road Trip</p>
+                  )
+                }
+                trigger={
+                  <p onClick={this.handleRoadTrip}>
+                    {isOnRoadTrip ? (
+                      <img src={truckcolor} alt={"Color Truck"}></img>
+                    ) : (
+                      <img src={truckbw} alt={"Truck"}></img>
+                    )}
+                  </p>
+                }
+                style={popupStyle}
+              />
+            </div>
+
             <p>{parkInfo.description}</p>
             <p>
               {" "}
@@ -95,31 +179,6 @@ export default class SinglePark extends Component {
                 style={popupStyle}
               />
             </p>
-
-            {/* <Popup
-              content={parkInfo.activities.map((activity) => (
-                <p key={activity.id} className="activity-list">
-                  {activity.name}
-                </p>
-              ))}
-              trigger={<h5>Activities</h5>}
-              style={popupStyle}
-            /> */}
-
-            {/* <Popup
-              content={
-                <p>
-                  {parkInfo.addresses[0].line1}
-                  <br></br>
-                  {parkInfo.addresses[0].city},{" "}
-                  {parkInfo.addresses[0].stateCode}{" "}
-                  {parkInfo.addresses[0].postalCode}
-                </p>
-              }
-              trigger={<h5>Address</h5>}
-              style={popupStyle}
-            /> */}
-
             <div
               onClick={() =>
                 this.toggleDetails({

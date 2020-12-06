@@ -18,17 +18,34 @@ const mapStyle = {
 export default class StateMap extends Component {
   state = {
     viewport: {
-      latitude: 37.0902,
-      longitude: -95.7129,
-      zoom: 4,
+      latitude: null,
+      longitude: null,
+      zoom: null,
     },
     showPopUp: false,
     popUpPark: null,
     showMore: true,
   };
 
+  componentWillMount = async () => {
+    await this.setViewPort();
+  };
+
   componentDidMount = () => {
     console.log(`I mounted!`);
+  };
+
+  setViewPort = () => {
+    this.setState(
+      {
+        viewport: {
+          latitude: 37.0902,
+          longitude: -95.7129,
+          zoom: 4,
+        },
+      },
+      console.log(`props here`, this.props)
+    );
   };
 
   handleShowPopUp = (park) => {
@@ -55,6 +72,13 @@ export default class StateMap extends Component {
   render() {
     const { singleStateParks, lat, lng } = this.props;
     const { viewport, popUpPark, showMore } = this.state;
+
+    // const viewport = {
+    //   latitude: 37.0902,
+    //   longitude: -95.7129,
+    //   zoom: 4,
+    // };
+
     return (
       <section className="map-container">
         <ReactMapGL
