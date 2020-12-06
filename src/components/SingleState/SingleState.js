@@ -51,7 +51,6 @@ export default class SingleState extends Component {
           <StateMap singleStateParks={singleStateParks} />
           <div className="single-park-container">
             {singleStateParks.map((park) => {
-              console.log(park.id);
               return <SinglePark key={park.id} park={park} />;
             })}
           </div>
