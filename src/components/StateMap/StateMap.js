@@ -20,7 +20,7 @@ export default class StateMap extends Component {
     viewport: {
       latitude: 37.0902,
       longitude: -95.7129,
-      zoom: 3,
+      zoom: 4,
     },
     showPopUp: false,
     popUpPark: null,
@@ -28,11 +28,7 @@ export default class StateMap extends Component {
   };
 
   componentDidMount = () => {
-    this.setStateCoordinates();
-  };
-
-  setStateCoordinates = () => {
-    console.log(`props`, this.props);
+    console.log(`I mounted!`);
   };
 
   handleShowPopUp = (park) => {
@@ -57,7 +53,7 @@ export default class StateMap extends Component {
   };
 
   render() {
-    const { singleStateParks } = this.props;
+    const { singleStateParks, lat, lng } = this.props;
     const { viewport, popUpPark, showMore } = this.state;
     return (
       <section className="map-container">

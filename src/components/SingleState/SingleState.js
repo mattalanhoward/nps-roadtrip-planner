@@ -14,10 +14,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 export default class SingleState extends Component {
   state = {
     singleStateParks: [],
-    parkOptions: [],
     loading: true,
-    singleParkDetails: {},
-    toggleDetails: false,
     lat: null,
     lng: null,
   };
@@ -26,7 +23,6 @@ export default class SingleState extends Component {
 
   async componentDidMount() {
     await this.fetchState(this.singleStateAbbr);
-    await this.createOptions();
   }
 
   async fetchState() {
@@ -45,64 +41,56 @@ export default class SingleState extends Component {
     }
   }
 
-  createOptions = () => {
-    const singleStateParks = this.state.singleStateParks;
-    const parkOptionsArr = [];
-    singleStateParks.map((park) => {
-      parkOptionsArr.push({ value: park.fullName, label: park.fullName });
-    });
-    this.setState({
-      parkOptions: parkOptionsArr,
-    });
-  };
-
-  displayParkDetails = (selected) => {
-    const park = selected.target.value;
-
-    const filteredPark = this.state.singleStateParks.filter(
-      (x) => x.fullName == park
-    );
-
-    this.setState({
-      singleParkDetails: filteredPark[0],
-      toggleDetails: true,
-    });
-  };
-
   render() {
-    const {
-      singleStateParks,
-      singleParkDetails,
-      toggleDetails,
-      lat,
-      lng,
-      parkOptions,
-    } = this.state;
-
+    const { singleStateParks } = this.state;
     return (
       <div>
         <TopNav />
-        {/* <h1>STATE: {this.singleStateAbbr.toUpperCase()}</h1> */}
-        <div className="state-park-container">
-          <div className="allParksList">
-            <Select
-              options={parkOptions}
-              placeholder={"Select a Park..."}
-              onChange={(val) => {
-                this.displayParkDetails({
-                  target: { name: val.value, value: val.value },
-                });
-              }}
-            />
+        <h1>{this.singleStateAbbr.toUpperCase()}</h1>
+        <section className="state-park-container">
+          <StateMap singleStateParks={singleStateParks} />
+          <div className="single-park-container">
+            {singleStateParks.map((park) => {
+              console.log(park.id);
+              return <SinglePark key={park.id} park={park} />;
+            })}
           </div>
-          <section className="state-park-map-and-list-container">
-            <StateMap singleStateParks={singleStateParks} lat={lat} lng={lng} />
-
-            {toggleDetails && <SinglePark {...singleParkDetails} />}
-          </section>
-        </div>
+        </section>
         <BottomNav />
       </div>
     );
   }
+}
+{
+  // createOptions = () => {
+  //   const singleStateParks = this.state.singleStateParks;
+  //   const parkOptionsArr = [];
+  //   singleStateParks.map((park) => {
+  //     parkOptionsArr.push({ value: park.fullName, label: park.fullName });
+  //   });
+  //   this.setState({
+  //     parkOptions: parkOptionsArr,
+  //   });
+  // };
+  // displayParkDetails = (selected) => {
+  //   const park = selected.target.value;
+  //   const filteredPark = this.state.singleStateParks.filter(
+  //     (x) => x.fullName == park
+  //   );
+  //   this.setState({
+  //     singleParkDetails: filteredPark[0],
+  //     toggleDetails: true,
+  //   });
+  // };
+  /* <div className="allParksList">
+  <Select
+    options={parkOptions}
+    placeholder={"Select a Park..."}
+    onChange={(val) => {
+      this.displayParkDetails({
+        target: { name: val.value, value: val.value },
+      });
+    }}
+  />
+</div> */
 }

@@ -39,20 +39,13 @@ export class NPS extends Component {
   }
 
   getStateInfo = () => {
-    this.setState(
-      {
-        allStateInfo: stateData,
-      },
-      () => {
-        console.log(this.state);
-      }
-    );
+    this.setState({
+      allStateInfo: stateData,
+    });
   };
 
   handleChange = (event) => {
-    this.setState({ stateAbbr: event.target.value }, () => {
-      console.log(this.state);
-    });
+    this.setState({ stateAbbr: event.target.value }, () => {});
   };
 
   render() {
