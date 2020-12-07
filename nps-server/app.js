@@ -13,7 +13,7 @@ var userRouter = require("./routes/auth");
 
 var app = express();
 
-console.log(process.env.PORT);
+// console.log(process.env.PORT);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
