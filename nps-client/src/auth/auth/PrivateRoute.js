@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 
 const PrivateRoute = ({
   component: Component,
-  signUp,
   logout,
   authenticated,
   user,
@@ -13,7 +12,12 @@ const PrivateRoute = ({
     <Route
       render={(props) =>
         authenticated ? (
-          <Component {...props} user={user} signUp={signUp} logout={logout} />
+          <Component
+            {...props}
+            user={user}
+            logout={logout}
+            authenticated={authenticated}
+          />
         ) : (
           <Redirect to="/" />
         )

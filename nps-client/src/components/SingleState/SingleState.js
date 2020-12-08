@@ -43,15 +43,27 @@ export default class SingleState extends Component {
 
   render() {
     const { singleStateParks } = this.state;
+    console.log(`Props in Single State`, this.props);
+    const props = this.props;
     return (
       <div>
-        <TopNav />
+        <TopNav
+          logout={this.props.logout}
+          authenticated={props.authenticated}
+        />
         <h1>{this.singleStateAbbr.toUpperCase()}</h1>
         <section className="state-park-container">
           <StateMap singleStateParks={singleStateParks} />
           <div className="single-park-container">
             {singleStateParks.map((park) => {
-              return <SinglePark key={park.id} park={park} />;
+              return (
+                <SinglePark
+                  key={park.id}
+                  park={park}
+                  logout={props.logout}
+                  authenticated={props.authenticated}
+                />
+              );
             })}
           </div>
         </section>

@@ -81,6 +81,8 @@ export default class SinglePark extends Component {
 
   render() {
     const parkInfo = this.props.park;
+    console.log(`Props in Single Park`, this.props);
+    const props = this.props;
     // console.log(`Park Info`, parkInfo);
     const {
       showCarousel,
@@ -107,46 +109,48 @@ export default class SinglePark extends Component {
                 ? `Various States: ${parkInfo.states}`
                 : `State: ${parkInfo.states}`}
             </p>
-            <div className="favorite-icons">
-              <Popup
-                content={
-                  isFavorite ? (
-                    <p>Remove from Favorites</p>
-                  ) : (
-                    <p>Add to Favorites</p>
-                  )
-                }
-                trigger={
-                  <p onClick={this.handleFavorite}>
-                    {isFavorite ? (
-                      <img src={yellowstar} alt={"yellowstar"}></img>
+            {props.authenticated && (
+              <div className="favorite-icons">
+                <Popup
+                  content={
+                    isFavorite ? (
+                      <p>Remove from Favorites</p>
                     ) : (
-                      <img src={whitestar} alt={"whitestar"}></img>
-                    )}
-                  </p>
-                }
-                style={popupStyle}
-              />
-              <Popup
-                content={
-                  isOnRoadTrip ? (
-                    <p>Remove from Road Trip</p>
-                  ) : (
-                    <p>Add to Road Trip</p>
-                  )
-                }
-                trigger={
-                  <p onClick={this.handleRoadTrip}>
-                    {isOnRoadTrip ? (
-                      <img src={truckcolor} alt={"Color Truck"}></img>
+                      <p>Add to Favorites</p>
+                    )
+                  }
+                  trigger={
+                    <p onClick={this.handleFavorite}>
+                      {isFavorite ? (
+                        <img src={yellowstar} alt={"yellowstar"}></img>
+                      ) : (
+                        <img src={whitestar} alt={"whitestar"}></img>
+                      )}
+                    </p>
+                  }
+                  style={popupStyle}
+                />
+                <Popup
+                  content={
+                    isOnRoadTrip ? (
+                      <p>Remove from Road Trip</p>
                     ) : (
-                      <img src={truckbw} alt={"Truck"}></img>
-                    )}
-                  </p>
-                }
-                style={popupStyle}
-              />
-            </div>
+                      <p>Add to Road Trip</p>
+                    )
+                  }
+                  trigger={
+                    <p onClick={this.handleRoadTrip}>
+                      {isOnRoadTrip ? (
+                        <img src={truckcolor} alt={"Color Truck"}></img>
+                      ) : (
+                        <img src={truckbw} alt={"Truck"}></img>
+                      )}
+                    </p>
+                  }
+                  style={popupStyle}
+                />
+              </div>
+            )}
 
             <p>{parkInfo.description}</p>
             <p>

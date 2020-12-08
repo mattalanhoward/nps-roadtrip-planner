@@ -8,18 +8,16 @@ import NPS from "./components/NPS/NPS";
 import Signup from "./components/Signup/Signup";
 import Login from "./components/Login/Login";
 import SingleState from "./components/SingleState/SingleState";
+import TopNav from "./components/TopNav/TopNav";
 
 class App extends React.Component {
   state = {
     authenticated: false,
     user: {},
-    newSignup: {},
-    signups: [],
   };
 
   componentDidMount = () => {
     const accessToken = localStorage.getItem("accessToken");
-    console.log(`Access Token`, accessToken);
     if (accessToken) {
       validateSession(accessToken)
         .then((response) => {
@@ -38,6 +36,7 @@ class App extends React.Component {
   };
 
   handleLogout = () => {
+    console.log(`Logout APP Clicked`);
     localStorage.clear();
     this.setState({
       authenticated: false,
@@ -47,7 +46,7 @@ class App extends React.Component {
 
   render() {
     const { authenticated } = this.state;
-
+    console.log(`APPSTATE`, this.state);
     return (
       <div className="App">
         <BrowserRouter>
@@ -58,6 +57,7 @@ class App extends React.Component {
               user={this.state.user}
               authenticated={authenticated}
               component={NPS}
+              logout={() => this.handleLogout}
             />
             <AnonRoute
               exact
@@ -73,18 +73,14 @@ class App extends React.Component {
               authenticate={this.authenticate}
               component={Login}
             />
-
-            {/* <Route exact path="/login" render={() => <Login />}></Route>
-          <Route exact path="/signup" render={() => <Signup />}></Route> */}
-            {/* <Route exact path="/state" render={() => <SingleState />}></Route> */}
             <AnonRoute
               exact
               path="/state/:details"
               authenticated={authenticated}
               authenticate={this.authenticate}
               component={SingleState}
+              logout={() => this.handleLogout}
             />
-
             <AnonRoute
               exact
               path="/github"

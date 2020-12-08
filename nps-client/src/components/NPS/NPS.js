@@ -50,13 +50,16 @@ export class NPS extends Component {
 
   render() {
     const { allParks, loading, stateAbbr, allStateInfo } = this.state;
+    console.log(`NPS STATE`, this.state);
+    console.log(`PROPS in the NPS`, this.props);
+    const props = this.props;
 
     if (loading) {
       return <div>Loading...</div>;
     } else {
       return (
         <div>
-          <TopNav />
+          <TopNav logout={props.logout} authenticated={props.authenticated} />
           <section className="nps-landing-container">
             <div className="nps-input-container">
               <h1>Find Your Next Park</h1>
