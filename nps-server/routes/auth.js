@@ -4,8 +4,8 @@ const { Router } = require("express");
 const router = new Router();
 const bcryptjs = require("bcryptjs");
 const saltRounds = 10;
-const User = require("../models/User");
-const Session = require("../models/Session");
+const User = require("../models/User.model");
+const Session = require("../models/Session.model");
 const mongoose = require("mongoose");
 
 ////////////////////////////////////////////////////////////////////////

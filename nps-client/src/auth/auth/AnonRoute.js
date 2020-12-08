@@ -7,6 +7,7 @@ const AnonRoute = ({
   authenticated,
   authenticate,
   logout,
+  user,
   ...rest
 }) => {
   return (
@@ -19,6 +20,7 @@ const AnonRoute = ({
             logout={logout}
             authenticate={authenticate}
             authenticated={authenticated}
+            user={user}
           />
         )
       )}

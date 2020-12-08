@@ -39,7 +39,6 @@ export default class SinglePark extends Component {
   };
 
   toggleDetails = (target) => {
-    console.log(`White girls love Target`, target);
     this.setState(
       {
         showParkDetails: !this.state.showParkDetails,
@@ -83,7 +82,7 @@ export default class SinglePark extends Component {
     const parkInfo = this.props.park;
     console.log(`Props in Single Park`, this.props);
     const props = this.props;
-    // console.log(`Park Info`, parkInfo);
+    console.log(`Park Info`, parkInfo);
     const {
       showCarousel,
       showParkDetails,

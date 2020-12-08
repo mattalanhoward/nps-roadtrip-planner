@@ -62,6 +62,7 @@ export default class SingleState extends Component {
                   park={park}
                   logout={props.logout}
                   authenticated={props.authenticated}
+                  user={props.user}
                 />
               );
             })}

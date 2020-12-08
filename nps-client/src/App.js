@@ -36,7 +36,7 @@ class App extends React.Component {
   };
 
   handleLogout = () => {
-    console.log(`Logout APP Clicked`);
+    // console.log(`Logout APP Clicked`);
     localStorage.clear();
     this.setState({
       authenticated: false,
@@ -46,7 +46,7 @@ class App extends React.Component {
 
   render() {
     const { authenticated } = this.state;
-    console.log(`APPSTATE`, this.state);
+    // console.log(`APPSTATE`, this.state);
     return (
       <div className="App">
         <BrowserRouter>
@@ -80,6 +80,7 @@ class App extends React.Component {
               authenticate={this.authenticate}
               component={SingleState}
               logout={() => this.handleLogout}
+              user={this.state.user}
             />
             <AnonRoute
               exact
